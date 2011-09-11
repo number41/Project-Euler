@@ -30,34 +30,34 @@ def build_grid(grid_file)
   return grid
 end
 
-def get_right(grid, x, y, count)
+def get_right(grid, row, col, count)
   ret = []
   count.times do |i|
-    ret << grid[x][y+i]
+    ret << grid[row][col+i]
   end
   return ret
 end
 
-def get_down(grid, x, y, count)
+def get_down(grid, row, col, count)
   ret = []
   count.times do |i|
-    ret << grid[x+i][y]
+    ret << grid[row+i][col]
   end
   return ret
 end
 
-def get_down_right(grid, x, y, count)
+def get_down_right(grid, row, col, count)
   ret = []
   count.times do |i|
-    ret << grid[x+i][y+i]
+    ret << grid[row+i][col+i]
   end
   return ret
 end
 
-def get_down_left(grid, x, y, count)
+def get_down_left(grid, row, col, count)
   ret = []
   count.times do |i|
-    ret << grid[x+i][y-i]
+    ret << grid[row+i][col-i]
   end
   return ret
 end
@@ -73,26 +73,26 @@ def find_largest_product(grid, count)
   bottom = rows - count + 1
 
   max = 0
-  rows.times do |x|
-    cols.times do |y|
+  rows.times do |r|
+    cols.times do |c|
       #check straight down
-      if x < bottom
-        max = [max, get_down(grid,x,y,count).reduce(1,:*)].max
+      if r < bottom
+        max = [max, get_down(grid,r,c,count).reduce(1,:*)].max
       end
 
       #check the right
-      if y < right
-        max = [max, get_right(grid,x,y,count).reduce(1,:*)].max
+      if c < right
+        max = [max, get_right(grid,r,c,count).reduce(1,:*)].max
       end
 
       # check diagonal down-right
-      if y < right and x < bottom
-        max = [max, get_down_right(grid,x,y,count).reduce(1,:*)].max
+      if c < right and r < bottom
+        max = [max, get_down_right(grid,r,c,count).reduce(1,:*)].max
       end
 
       # check diagonal down-left
-      if y > left and x < bottom
-        max = [max, get_down_left(grid,x,y,count).reduce(1,:*)].max
+      if c > left and r < bottom
+        max = [max, get_down_left(grid,r,c,count).reduce(1,:*)].max
       end
     end
   end
@@ -104,8 +104,6 @@ end
 
 grid = build_grid(ARGV[0])
 puts "The grid is #{grid.size} x #{grid[0].size}"
-
-#find_largest_product(grid, ARGV[1].to_i)
 puts "The largest product is #{find_largest_product(grid, ARGV[1].to_i)}"
 
 
