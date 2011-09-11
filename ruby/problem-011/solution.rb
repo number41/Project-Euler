@@ -1,7 +1,9 @@
 #!/usr/local/bin/ruby -w
 
-if (ARGV.length != 1)
-  puts "Usage is 'solution.rb <file name of grid>'"
+# 70600674
+
+if (ARGV.length != 2)
+  puts "Usage is 'solution.rb <file name of grid> <count>'"
   exit 1
 end
 
@@ -33,6 +35,7 @@ def get_right(grid, x, y, count)
   count.times do |i|
     ret << grid[x][y+i]
   end
+  puts "get_right(#{x},#{y})=>#{ret}"
   return ret
 end
 
@@ -41,6 +44,7 @@ def get_down(grid, x, y, count)
   count.times do |i|
     ret << grid[x+i][y]
   end
+  puts "get_down(#{x},#{y})=>#{ret}"
   return ret
 end
 
@@ -49,14 +53,16 @@ def get_down_right(grid, x, y, count)
   count.times do |i|
     ret << grid[x+i][y+i]
   end
+  puts "get_down_right(#{x},#{y})=>#{ret}"
   return ret
 end
 
 def get_down_left(grid, x, y, count)
   ret = []
   count.times do |i|
-    ret << grid[x-i][y+i]
+    ret << grid[x+i][y-i]
   end
+  puts "get_down_left(#{x},#{y})=>#{ret}"
   return ret
 end
 
@@ -66,31 +72,37 @@ def find_largest_product(grid, count)
   cols = grid[0].size
 
   # set up boundries
-  left = count - 1
-  right = columns - count
-  bottom = rows - count
+  left = count
+  right = cols - count + 1
+  bottom = rows - count + 1
 
+  puts "The borders are: bottom:=#{bottom}, left:=#{left}, right:=#{right}"
   max = 0
   rows.times do |x|
     cols.times do |y|
+      #puts "x,y = #{x},#{y}"
       #check straight down
-      if y < bottom
+      if x < bottom
         max = [max, get_down(grid,x,y,count).reduce(1,:*)].max
+        #puts "At [#{x},#{y}]: get_down is #{get_down(grid,x,y,count)}"
       end
 
       #check the right
-      if x < right
+      if y < right
         max = [max, get_right(grid,x,y,count).reduce(1,:*)].max
+        #puts "At [#{x},#{y}]: get_right is #{get_right(grid,x,y,count)}"
       end
 
       # check diagonal down-right
-      if x < right and y < bottom
+      if y < right and x < bottom
         max = [max, get_down_right(grid,x,y,count).reduce(1,:*)].max
+        #puts "At [#{x},#{y}]: get_down_right is #{get_down_right(grid,x,y,count)}"
       end
 
       # check diagonal down-left
-      if x > left and y < bottom
+      if y > left and x < bottom
         max = [max, get_down_left(grid,x,y,count).reduce(1,:*)].max
+        #puts "At [#{x},#{y}]: get_down_left is #{get_down_left(grid,x,y,count)}"
       end
     end
   end
@@ -98,9 +110,13 @@ def find_largest_product(grid, count)
   return max
 end
 
+################################################
+
 grid = build_grid(ARGV[0])
 puts "The grid is #{grid.size} x #{grid[0].size}"
 
+#find_largest_product(grid, ARGV[1].to_i)
+puts "The largest product is #{find_largest_product(grid, ARGV[1].to_i)}"
 
 
 
