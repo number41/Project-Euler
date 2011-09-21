@@ -9,23 +9,17 @@ end
 
 # Build the grid
 def build_grid(stream)
-  a = stream.readlines
-  rows = a.size
-  cols = a[0].split.count
-    
   grid = []
-  rows.times do |r|
-    grid[r] = []
-    a[r].split.each do |i|
-      grid[r] << i.to_i
+  begin
+    while grid << stream.readline.split.map{|datum|datum.to_i}
+      # Do a crude check that the number of columns are
+      # all consistent
+      if grid.first.size != grid.last.size
+        raise ArgumentError.new("Column mismatch: #{grid.first.size} != #{grid.last.size}")
+      end
     end
-    # Do a crude check that the number of columns 
-    # in this row is the same as the first
-    if cols != grid[r].size
-      raise ArgumentError.new("column mismatch: #{cols} vs #{grid[r].size}")    
-    end
+  rescue EOFError
   end
-
   return grid
 end
 
