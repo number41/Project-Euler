@@ -8,22 +8,21 @@ if (ARGV.length != 2)
 end
 
 # Build the grid
-def build_grid(grid_file)
-  grid = []
-  rows, cols = 0, 0
-  File.open(grid_file, "r") do |f|
-    a = f.readlines
-    rows = a.size
-    cols = a[0].split.count
+def build_grid(stream)
+  a = stream.readlines
+  rows = a.size
+  cols = a[0].split.count
     
-    rows.times do |r|
-      grid[r] = []
-      a[r].split.each do |i|
-        grid[r] << i.to_i
-      end
-      # Do a crude check that the number of columns 
-      # in this row is the same as the first
-      # @todo throw exception if a[r].size != cols
+  grid = []
+  rows.times do |r|
+    grid[r] = []
+    a[r].split.each do |i|
+      grid[r] << i.to_i
+    end
+    # Do a crude check that the number of columns 
+    # in this row is the same as the first
+    if cols != grid[r].size
+      raise ArgumentError.new("column mismatch: #{cols} vs #{grid[r].size}")    
     end
   end
 
@@ -102,7 +101,11 @@ end
 
 ################################################
 
-grid = build_grid(ARGV[0])
+grid = nil
+File.open(ARGV[0], "r") do |f|
+  grid = build_grid(f)
+end
+  
 puts "The grid is #{grid.size} x #{grid[0].size}"
 puts "The largest product is #{find_largest_product(grid, ARGV[1].to_i)}"
 
